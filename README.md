@@ -60,10 +60,10 @@ You can use the library directly in the browser without a build tool:
 
 ```html
 <!-- From CDN (unpkg) -->
-<script src="https://unpkg.com/@andsafe/iframe-resizing@1.1.1/dist/iframe-resizing.umd.js"></script>
+<script src="https://unpkg.com/@andsafe/iframe-resizing@1.3.0/dist/iframe-resizing.umd.js"></script>
 
 <!-- Or from jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.1.1/dist/iframe-resizing.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.3.0/dist/iframe-resizing.umd.js"></script>
 
 <script>
   // The library is available globally as IFrameResizing
