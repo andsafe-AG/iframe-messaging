@@ -42,4 +42,10 @@ export interface IFrameResizingOptions {
    * Error capture function for monitoring/logging services
    */
   captureError?: (error: Error) => void;
+  /**
+   * Method used to calculate the iframe height
+   * - 'contentRect': Uses the height from ResizeObserver's contentRect (default)
+   * - 'scrollHeight': Uses document.documentElement.scrollHeight
+   */
+  heightCalculationMethod?: 'contentRect' | 'scrollHeight';
 }

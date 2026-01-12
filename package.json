@@ -1,6 +1,6 @@
 {
   "name": "@andsafe/iframe-resizing",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Standalone iframe resizing script for applications with automatic height communication to parent windows",
   "type": "module",
   "private": false,

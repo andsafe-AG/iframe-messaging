@@ -60,10 +60,10 @@ You can use the library directly in the browser without a build tool:
 
 ```html
 <!-- From CDN (unpkg) -->
-<script src="https://unpkg.com/@andsafe/iframe-resizing@1.3.0/dist/iframe-resizing.umd.js"></script>
+<script src="https://unpkg.com/@andsafe/iframe-resizing@1.4.0/dist/iframe-resizing.umd.js"></script>
 
 <!-- Or from jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.3.0/dist/iframe-resizing.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.4.0/dist/iframe-resizing.umd.js"></script>
 
 <script>
   // The library is available globally as IFrameResizing
@@ -222,13 +222,20 @@ interface IFrameResizingOptions {
    * Error capture function for monitoring/logging services
    */
   captureError?: (error: Error) => void;
+
+  /**
+   * Method used to calculate the iframe height
+   * - 'contentRect': Uses the height from ResizeObserver's contentRect (default)
+   * - 'scrollHeight': Uses document.documentElement.scrollHeight
+   */
+  heightCalculationMethod?: 'contentRect' | 'scrollHeight';
 }
 ```
 
 ## How It Works
 
 1. **ResizeObserver** - Creates a ResizeObserver that monitors the document documentElement for size changes
-2. **Size Detection** - When the documentElement size changes, captures the new height via `contentRect`
+2. **Size Detection** - When the documentElement size changes, captures the new height. By default, it uses `contentRect.height` from the observer entry, but can be configured to use `document.documentElement.scrollHeight`.
 3. **Message Passing** - Sends a `resize` command to the parent window using `postMessage`
 4. **Acknowledgment** - Waits for acknowledgment from the parent window (20-second timeout)
 5. **Error Handling** - Optionally calls error handlers if the resize fails

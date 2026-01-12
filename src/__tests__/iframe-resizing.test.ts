@@ -155,6 +155,37 @@ describe('iframe-resizing', () => {
       vi.useRealTimers();
     });
 
+    it('should use scrollHeight when heightCalculationMethod is set to scrollHeight', async () => {
+      // Mock scrollHeight
+      Object.defineProperty(document.documentElement, 'scrollHeight', {
+        value: 1234,
+        configurable: true,
+      });
+
+      initIFrameResizing({ heightCalculationMethod: 'scrollHeight' });
+
+      // Simulate resize event
+      const mockEntry: ResizeObserverEntry = {
+        target: document.documentElement,
+        contentRect: { height: 500 } as DOMRectReadOnly,
+        borderBoxSize: [] as any,
+        contentBoxSize: [] as any,
+        devicePixelContentBoxSize: [] as any,
+      };
+
+      resizeObserverCallback([mockEntry], {} as ResizeObserver);
+
+      // Wait for postMessage to be called
+      await vi.waitFor(() => {
+        expect(window.parent.postMessage).toHaveBeenCalled();
+      });
+
+      const call = (window.parent.postMessage as any).mock.calls[0];
+      const message = call[0];
+
+      expect(message.payload).toEqual([[1234]]);
+    });
+
     it('should handle captureError callback when resize fails', async () => {
       vi.useFakeTimers();
 

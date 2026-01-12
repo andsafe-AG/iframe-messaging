@@ -101,7 +101,7 @@ function isInIframe(): boolean {
  * @public
  */
 export function initIFrameResizing(options: IFrameResizingOptions = {}): () => void {
-  const { onError, captureError } = options;
+  const { onError, captureError, heightCalculationMethod = 'contentRect' } = options;
 
   if (isServerSide()) {
     console.warn('initIFrameResizing: Cannot initialize on server side');
@@ -119,7 +119,13 @@ export function initIFrameResizing(options: IFrameResizingOptions = {}): () => v
 
     const { contentRect } = entry;
 
-    sendResizeCommand(contentRect.height).catch((error) => {
+    let height = contentRect.height;
+
+    if (heightCalculationMethod === 'scrollHeight') {
+      height = document.documentElement.scrollHeight;
+    }
+
+    sendResizeCommand(height).catch((error) => {
       console.warn(error.message);
 
       if (onError) {
