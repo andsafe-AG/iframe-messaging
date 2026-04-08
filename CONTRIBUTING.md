@@ -1,4 +1,4 @@
-# Contributing to @andsafe/iframe-resizing
+# Contributing to @andsafe/iframe-messaging
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
 
@@ -19,12 +19,12 @@ By participating in this project, you agree to maintain a respectful and inclusi
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/iframe-resizing.git
-   cd iframe-resizing
+   git clone https://github.com/YOUR_USERNAME/iframe-messaging.git
+   cd iframe-messaging
    ```
 3. Add the upstream repository:
    ```bash
-   git remote add upstream https://github.com/andsafe-AG/iframe-resizing.git
+   git remote add upstream https://github.com/andsafe-AG/iframe-messaging.git
    ```
 
 ### Installation
@@ -67,13 +67,20 @@ npm install
 | `npm run test:ui` | Open Vitest UI |
 | `npm run build` | Build the library |
 | `npm run type-check` | Check TypeScript types |
+| `npm run lint` | Lint source files |
+| `npm run lint:fix` | Lint and auto-fix issues |
+| `npm run format` | Check code formatting |
+| `npm run format:fix` | Format source files |
+| `npm run check` | Run all Biome checks |
+| `npm run check:fix` | Run and auto-fix all Biome checks |
+| `npm run ci:check` | Run Biome checks in CI mode |
 | `npm run server` | Start example server |
 | `npm run server:dev` | Start server with hot reload |
 
 ## Project Structure
 
 ```
-iframe-resizing/
+iframe-messaging/
 ├── .github/
 │   └── workflows/          # GitHub Actions workflows
 ├── examples/               # Example implementations
@@ -83,12 +90,19 @@ iframe-resizing/
 ├── src/
 │   ├── __tests__/         # Test files
 │   │   ├── setup.ts       # Test configuration
+│   │   ├── datalayer-push.test.ts
 │   │   ├── iframe-resizing.test.ts
-│   │   └── types.test.ts
-│   ├── iframe-resizing.ts # Main implementation
+│   │   ├── send-command.test.ts
+│   │   ├── types.test.ts
+│   │   └── utils.test.ts
+│   ├── datalayer-push.ts  # Data layer integration
+│   ├── iframe-resizing.ts # Core resizing implementation
+│   ├── index.ts           # Public API
+│   ├── send-command.ts    # Command sending logic
 │   ├── types.ts           # Type definitions
-│   └── index.ts           # Public API
+│   └── utils.ts           # Shared utilities
 ├── dist/                  # Build output (generated)
+├── biome.json             # Biome linter/formatter config
 └── coverage/              # Coverage reports (generated)
 ```
 
@@ -100,6 +114,7 @@ iframe-resizing/
 - Use TypeScript for all source files
 - Write clear, self-documenting code
 - Add JSDoc comments for public APIs
+- Use [Biome](https://biomejs.dev/) for linting and formatting — run `npm run check:fix` before committing
 
 ### Testing Requirements
 
@@ -220,6 +235,7 @@ git commit -m "test(integration): add parent-child tests"
 2. **Run all checks**:
    ```bash
    npm run type-check
+   npm run ci:check
    npm run test:run
    npm run build
    ```
@@ -374,9 +390,9 @@ npx tsc --noEmit --watch
 ## Getting Help
 
 - 📖 Read the [documentation](./README.md)
-- 🐛 Check [existing issues](https://github.com/andsafe-AG/iframe-resizing/issues)
+- 🐛 Check [existing issues](https://github.com/andsafe-AG/iframe-messaging/issues)
 - 💬 Ask questions in issue discussions
-- 📧 Contact maintainers: [GitHub Issues](https://github.com/andsafe-AG/iframe-resizing/issues)
+- 📧 Contact maintainers: [GitHub Issues](https://github.com/andsafe-AG/iframe-messaging/issues)
 
 ## License
 
@@ -395,4 +411,4 @@ Don't hesitate to ask questions! Open an issue with the "question" label, and we
 
 ---
 
-Thank you for contributing to @andsafe/iframe-resizing! 🎉
+Thank you for contributing to @andsafe/iframe-messaging! 🎉

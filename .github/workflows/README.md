@@ -42,7 +42,7 @@ This directory contains GitHub Actions workflows for CI/CD automation.
 
 **Status Badge:**
 ```markdown
-![CI](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/ci.yml/badge.svg)
 ```
 
 ### 2. Release Workflow (`release.yml`)
@@ -219,10 +219,10 @@ Recommended settings for `main` branch:
 Add these badges to your README.md:
 
 ```markdown
-![CI](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/ci.yml/badge.svg)
-![Release](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/release.yml/badge.svg)
-![CodeQL](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/codeql.yml/badge.svg)
-[![codecov](https://codecov.io/gh/andsafe-AG/iframe-resizing/branch/main/graph/badge.svg)](https://codecov.io/gh/andsafe-AG/iframe-resizing)
+![CI](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/ci.yml/badge.svg)
+![Release](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/release.yml/badge.svg)
+![CodeQL](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/codeql.yml/badge.svg)
+[![codecov](https://codecov.io/gh/andsafe-AG/iframe-messaging/branch/main/graph/badge.svg)](https://codecov.io/gh/andsafe-AG/iframe-messaging)
 ```
 
 ## Troubleshooting

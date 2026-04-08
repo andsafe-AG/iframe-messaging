@@ -7,72 +7,9 @@
  * @packageDocumentation
  */
 
-import { v4 as uuidv4 } from 'uuid';
-import type { Command, CommandResponse, IFrameResizingOptions } from './types';
-import { participants } from './types';
-
-/**
- * Sends a resize command to the parent window
- * @param height - The new height to communicate to the parent
- * @returns Promise that resolves when the resize is acknowledged
- * @internal
- */
-function sendResizeCommand(height: number): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const command: Command = {
-      id: uuidv4(),
-      sender: participants.CHILD,
-      receiver: participants.PARENT,
-      name: 'resize',
-      payload: [[height]],
-    };
-
-    const timeout = setTimeout(() => {
-      window.removeEventListener('message', listener);
-      reject(new Error(`Timeout exceeded for command resize`));
-    }, 20000);
-
-    function listener({ data: commandResponse }: MessageEvent<CommandResponse>) {
-      if (
-        command.sender !== commandResponse.receiver ||
-        command.id !== commandResponse.correspondingCommandId
-      ) {
-        // this is not the response we are looking for
-        return;
-      }
-
-      clearTimeout(timeout);
-      window.removeEventListener('message', listener);
-      resolve();
-    }
-
-    window.addEventListener('message', listener, false);
-    window.parent.postMessage(command, '*');
-  });
-}
-
-/**
- * Checks if code is running on server side
- * @returns true if running on server side
- * @internal
- */
-function isServerSide(): boolean {
-  return typeof window === 'undefined';
-}
-
-/**
- * Checks if code is running inside an iframe
- * @returns true if running inside an iframe
- * @internal
- */
-function isInIframe(): boolean {
-  try {
-    return window.self !== window.top;
-  } catch (_e) {
-    // Cross-origin access throws error, but that means we're in an iframe
-    return true;
-  }
-}
+import { sendCommand } from './send-command';
+import type { IFrameResizingOptions } from './types';
+import { isInIframe, isServerSide } from './utils';
 
 /**
  * Initializes iframe resizing functionality
@@ -125,7 +62,7 @@ export function initIFrameResizing(options: IFrameResizingOptions = {}): () => v
       height = document.documentElement.scrollHeight;
     }
 
-    sendResizeCommand(height).catch((error) => {
+    sendCommand('resize', [height]).catch((error) => {
       console.warn(error.message);
 
       if (onError) {

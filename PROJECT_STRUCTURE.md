@@ -1,35 +1,54 @@
 # Project Structure
 
-This document provides an overview of the `@andsafe/iframe-resizing` package structure.
+This document provides an overview of the `@andsafe/iframe-messaging` package structure.
 
 ## Directory Structure
 
 ```
-iframe-resizing-standalone/
+iframe-messaging/
 ├── src/                          # Source files (TypeScript)
+│   ├── __tests__/                # Test files
+│   │   ├── setup.ts              # Test environment configuration
+│   │   ├── datalayer-push.test.ts
+│   │   ├── iframe-resizing.test.ts
+│   │   ├── send-command.test.ts
+│   │   ├── types.test.ts
+│   │   └── utils.test.ts
 │   ├── index.ts                  # Main entry point and exports
 │   ├── iframe-resizing.ts        # Core resizing implementation
-│   └── types.ts                  # TypeScript type definitions
+│   ├── datalayer-push.ts         # Data layer integration
+│   ├── send-command.ts           # postMessage command logic
+│   ├── types.ts                  # TypeScript type definitions
+│   └── utils.ts                  # Shared utilities
 │
 ├── dist/                         # Build output (generated)
-│   ├── iframe-resizing.js        # ES Module build
-│   ├── iframe-resizing.cjs       # CommonJS build
-│   ├── iframe-resizing.d.ts      # TypeScript declarations (main)
+│   ├── iframe-messaging.js       # ES Module build
+│   ├── iframe-messaging.cjs      # CommonJS build
+│   ├── iframe-messaging.umd.js   # UMD build (browser globals)
+│   ├── iframe-messaging.d.ts     # TypeScript declarations (main)
 │   ├── index.d.ts                # TypeScript declarations (entry)
 │   ├── types.d.ts                # TypeScript declarations (types)
 │   └── *.map                     # Source maps
 │
 ├── examples/                     # Usage examples
+│   ├── server.js                 # Local development server
 │   ├── vanilla-js.html           # Vanilla JavaScript example (child window)
 │   ├── typescript.ts             # TypeScript usage examples
-│   └── parent-window.html        # Parent window implementation example
+│   ├── parent-window.html        # Parent window implementation example
+│   ├── parent-child-demo.html    # Combined parent+child demo
+│   ├── browser-standalone.html   # Standalone browser usage example
+│   └── test-iframe.html          # IFrame test helper
 │
 ├── package.json                  # Package configuration
 ├── tsconfig.json                 # TypeScript configuration
 ├── vite.config.ts                # Vite build configuration
+├── vitest.config.ts              # Vitest test configuration
+├── biome.json                    # Biome linter/formatter configuration
 │
 ├── README.md                     # Main documentation
 ├── CHANGELOG.md                  # Version history
+├── CONTRIBUTING.md               # Contribution guidelines
+├── GETTING_STARTED.md            # Quick-start guide
 ├── LICENSE                       # MIT License
 ├── PROJECT_STRUCTURE.md          # This file
 │
@@ -45,7 +64,9 @@ Main entry point for the package. Exports all public APIs and types.
 **Exports:**
 - `initIFrameResizing` - Manual initialization function
 - `autoInitIFrameResizing` - Auto-init with DOM ready detection
-- `IFrameResizingOptions` - Configuration type
+- `pushToDataLayer` - Push events to parent data layer
+- `IFrameResizingOptions` - Resizing configuration type
+- `IFrameCommandOptions` - Base command options type
 - `Participant` - Participant type
 - `Command` - Command structure type
 - `CommandResponse` - Response structure type
@@ -55,37 +76,58 @@ Main entry point for the package. Exports all public APIs and types.
 Core implementation of the iframe resizing functionality.
 
 **Key Components:**
-- `sendResizeCommand()` - Sends resize command via postMessage
-- `isServerSide()` - SSR detection
-- `initIFrameResizing()` - Main initialization function
-- `autoInitIFrameResizing()` - Auto-init wrapper
-- Browser global setup for UMD support
+- `initIFrameResizing()` - Main initialization function; sets up a ResizeObserver and sends resize commands to the parent
+- `autoInitIFrameResizing()` - Convenience wrapper that waits for DOM ready before calling `initIFrameResizing`
+
+### `src/datalayer-push.ts`
+Data layer integration for pushing analytics events from within an iframe to the parent window.
+
+**Exports:**
+- `pushToDataLayer()` - Sends a `pushToDataLayer` command with an event object to the parent window
+
+### `src/send-command.ts`
+Low-level postMessage command abstraction used internally.
+
+**Exports (internal):**
+- `sendCommand()` - Sends a named command with a payload to the parent window and awaits acknowledgment
 
 ### `src/types.ts`
 TypeScript type definitions and constants.
 
 **Exports:**
-- `participants` - Constant object with PARENT and CHILD values
+- `participants` - Constant object with `PARENT` and `CHILD` values
 - `Participant` - Type for participants
 - `Command` - Message command structure
 - `CommandResponse` - Message response structure
-- `IFrameResizingOptions` - Configuration options
+- `IFrameCommandOptions` - Base options (error callbacks)
+- `IFrameResizingOptions` - Resizing-specific options (extends `IFrameCommandOptions`)
+
+### `src/utils.ts`
+Shared utility functions used internally across the package.
+
+**Exports (internal):**
+- `isServerSide()` - Returns `true` when running in a server-side (non-browser) environment
+- `isInIframe()` - Returns `true` when running inside an iframe
 
 ## Build Output
 
 The build process (via Vite) generates:
 
-1. **ES Module** (`iframe-resizing.js`)
+1. **ES Module** (`iframe-messaging.js`)
    - For modern bundlers and browsers
    - Tree-shakeable
    - ~1.7KB (uncompressed), ~0.8KB gzipped
 
-2. **CommonJS** (`iframe-resizing.cjs`)
+2. **CommonJS** (`iframe-messaging.cjs`)
    - For Node.js and older bundlers
    - Requires Node.js or bundler
    - ~1.4KB (uncompressed), ~0.76KB gzipped
 
-3. **Type Declarations** (`*.d.ts`)
+3. **UMD** (`iframe-messaging.umd.js`)
+   - Universal Module Definition for direct browser `<script>` usage
+   - Exposes `IFrameMessaging` global
+
+4. **Type Declarations** (`*.d.ts`)
    - Full TypeScript support
    - Includes type maps for IDE navigation
 
@@ -96,34 +138,32 @@ The build process (via Vite) generates:
 ## Examples
 
 ### `examples/vanilla-js.html`
-A complete working example showing:
-- How to import and initialize the library
-- Dynamic content manipulation
-- Error handling
-- Cleanup on unload
+A working child-window example showing basic library initialization, dynamic content, error handling, and cleanup.
 
 ### `examples/typescript.ts`
-TypeScript examples demonstrating:
-- Basic usage
-- Error handling
-- Manual initialization
-- Class-based usage
-- Dynamic content applications
-- Conditional initialization
+TypeScript examples demonstrating basic usage, error handling, manual initialization, and class-based usage.
 
 ### `examples/parent-window.html`
-Parent window implementation showing:
-- How to receive resize messages
-- Message acknowledgment
-- Height adjustment
-- Debugging/logging
+Parent window implementation showing how to receive resize messages, send acknowledgments, and adjust iframe height.
+
+### `examples/parent-child-demo.html`
+Combined demo with both parent and child embedded on the same page for quick local testing.
+
+### `examples/browser-standalone.html`
+Shows direct browser usage without a bundler (CDN / script-tag style).
+
+### `examples/test-iframe.html`
+Minimal iframe used as a target when testing the parent window examples.
+
+### `examples/server.js`
+Express-based local development server that serves all example files.
 
 ## Configuration Files
 
 ### `package.json`
 - Package metadata and dependencies
 - Build scripts
-- Module format exports configuration
+- Module format exports configuration (`import` → `iframe-messaging.js`, `require` → `iframe-messaging.cjs`)
 - Publishing configuration
 
 ### `tsconfig.json`
@@ -137,6 +177,17 @@ Parent window implementation showing:
 - Library mode setup
 - Multiple output formats (ES + CJS)
 - Type declaration generation via vite-plugin-dts
+
+### `vitest.config.ts`
+- Vitest test configuration
+- happy-dom environment
+- Coverage thresholds (statements/lines ≥95%, branches ≥90%, functions 100%)
+- Coverage exclusions for type/re-export files
+
+### `biome.json`
+- Biome linter and formatter configuration
+- Single-quote style, 2-space indentation, 100-char line width
+- Git VCS integration
 
 ### `.npmignore`
 Files excluded from npm package:
@@ -170,6 +221,21 @@ npm run dev
 npm run type-check
 ```
 
+### Linting & Formatting
+```bash
+npm run check        # Check all Biome rules
+npm run check:fix    # Auto-fix all Biome issues
+npm run lint         # Lint only
+npm run format:fix   # Format only
+```
+
+### Testing
+```bash
+npm test             # Watch mode
+npm run test:run     # Run once
+npm run test:coverage  # With coverage report
+```
+
 ### Building
 ```bash
 npm run build
@@ -190,8 +256,8 @@ The package uses modern package.json exports field:
 {
   "exports": {
     ".": {
-      "import": "./dist/iframe-resizing.js",
-      "require": "./dist/iframe-resizing.cjs",
+      "import": "./dist/iframe-messaging.js",
+      "require": "./dist/iframe-messaging.cjs",
       "types": "./dist/index.d.ts"
     }
   }
@@ -255,7 +321,7 @@ npm pack
 
 # This creates a .tgz file
 # In your test project
-npm install /path/to/andsafe-iframe-resizing-1.0.0.tgz
+npm install /path/to/andsafe-iframe-messaging-1.0.0.tgz
 ```
 
 Or use npm link:
@@ -265,7 +331,7 @@ Or use npm link:
 npm link
 
 # In your test project
-npm link @andsafe/iframe-resizing
+npm link @andsafe/iframe-messaging
 ```
 
 ## Future Enhancements

@@ -124,7 +124,7 @@ jobs:
       - name: Create tarball
         run: |
           npm pack
-          mv *.tgz iframe-resizing-${{ github.ref_name }}.tgz
+          mv *.tgz iframe-messaging-${{ github.ref_name }}.tgz
 
       - name: Extract version from tag
         id: get_version
@@ -154,7 +154,7 @@ jobs:
         with:
           body_path: release-notes.md
           files: |
-            iframe-resizing-${{ github.ref_name }}.tgz
+            iframe-messaging-${{ github.ref_name }}.tgz
             dist-release/*.js
             dist-release/*.cjs
             dist-release/*.d.ts
@@ -166,4 +166,4 @@ jobs:
       - name: Update package version in badge
         run: |
           echo "Released version: v${{ steps.get_version.outputs.VERSION }}"
-          echo "NPM package: https://www.npmjs.com/package/@andsafe/iframe-resizing"
+          echo "NPM package: https://www.npmjs.com/package/@andsafe/iframe-messaging"

@@ -71,8 +71,8 @@ jobs:
       - name: Check build artifacts
         run: |
           ls -la dist/
-          test -f dist/iframe-resizing.js
-          test -f dist/iframe-resizing.cjs
+          test -f dist/iframe-messaging.js
+          test -f dist/iframe-messaging.cjs
           test -f dist/index.d.ts
 
       - name: Upload build artifacts

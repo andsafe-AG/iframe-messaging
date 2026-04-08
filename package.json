@@ -1,21 +1,21 @@
 {
-  "name": "@andsafe/iframe-resizing",
-  "version": "1.4.0",
+  "name": "@andsafe/iframe-messaging",
+  "version": "1.5.0",
   "description": "Standalone iframe resizing script for applications with automatic height communication to parent windows",
   "type": "module",
   "private": false,
-  "main": "./dist/iframe-resizing.cjs",
-  "module": "./dist/iframe-resizing.js",
+  "main": "./dist/iframe-messaging.cjs",
+  "module": "./dist/iframe-messaging.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/iframe-resizing.js"
+        "default": "./dist/iframe-messaging.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/iframe-resizing.cjs"
+        "default": "./dist/iframe-messaging.cjs"
       }
     }
   },
@@ -59,7 +59,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/andsafe-AG/iframe-resizing"
+    "url": "https://github.com/andsafe-AG/iframe-messaging"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.7",

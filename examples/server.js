@@ -129,6 +129,12 @@ app.get('/', (_req, res) => {
           <p>Test the vanilla-js example embedded in an iframe to see the resizing in action.</p>
           <a href="/examples/test-iframe.html" target="_blank">View Test</a>
         </div>
+
+        <div class="card">
+          <h2>DataLayer Push Demo</h2>
+          <p>Demonstrates pushing analytics events from an embedded iframe to the parent window's <code>dataLayer</code> using <code>pushToDataLayer</code>.</p>
+          <a href="/examples/datalayer-parent.html" target="_blank">View Demo</a>
+        </div>
       </div>
 
       <script>
@@ -166,6 +172,7 @@ Server running at: http://localhost:${PORT}
 Examples available:
   • Vanilla JS:      http://localhost:${PORT}/examples/vanilla-js.html
   • Parent-Child:    http://localhost:${PORT}/examples/parent-child-demo.html
+  • DataLayer Push:  http://localhost:${PORT}/examples/datalayer-parent.html
   • All Examples:    http://localhost:${PORT}
 
 Server Features:
