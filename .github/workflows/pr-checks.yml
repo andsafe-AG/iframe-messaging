@@ -143,7 +143,7 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
 
           # Check required files exist
-          for file in iframe-resizing.js iframe-resizing.cjs index.d.ts; do
+          for file in iframe-messaging.js iframe-messaging.cjs index.d.ts; do
             if [ -f "dist/$file" ]; then
               echo "✅ $file exists" >> $GITHUB_STEP_SUMMARY
             else

@@ -13,13 +13,13 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'IFrameResizing',
+      name: 'IFrameMessaging',
       formats: ['es', 'cjs', 'umd'],
       fileName: (format) => {
-        if (format === 'es') return 'iframe-resizing.js';
-        if (format === 'cjs') return 'iframe-resizing.cjs';
-        if (format === 'umd') return 'iframe-resizing.umd.js';
-        return `iframe-resizing.${format}.js`;
+        if (format === 'es') return 'iframe-messaging.js';
+        if (format === 'cjs') return 'iframe-messaging.cjs';
+        if (format === 'umd') return 'iframe-messaging.umd.js';
+        return `iframe-messaging.${format}.js`;
       },
     },
     rollupOptions: {

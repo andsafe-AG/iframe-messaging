@@ -1,11 +1,11 @@
-# @andsafe/iframe-resizing
+# @andsafe/iframe-messaging
 
 A lightweight, framework-agnostic library for automatic iframe height resizing. Perfect for embedded applications that need to communicate their size to parent windows.
 
-[![npm version](https://img.shields.io/npm/v/@andsafe/iframe-resizing.svg)](https://www.npmjs.com/package/@andsafe/iframe-resizing)
+[![npm version](https://img.shields.io/npm/v/@andsafe/iframe-messaging.svg)](https://www.npmjs.com/package/@andsafe/iframe-messaging)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/ci.yml/badge.svg)](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/codeql.yml/badge.svg)](https://github.com/andsafe-AG/iframe-resizing/actions/workflows/codeql.yml)
+[![CI](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/ci.yml/badge.svg)](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/codeql.yml/badge.svg)](https://github.com/andsafe-AG/iframe-messaging/actions/workflows/codeql.yml)
 [![Coverage](https://img.shields.io/badge/coverage-97.67%25-brightgreen.svg)](./coverage)
 
 ## Features
@@ -15,21 +15,21 @@ A lightweight, framework-agnostic library for automatic iframe height resizing. 
 - 💬 **PostMessage Protocol** - Secure cross-origin communication
 - 🎯 **TypeScript Support** - Full type definitions included
 - 🌐 **Universal** - Works with vanilla JS, TypeScript, and all frameworks
-- 📤 **Dual Exports** - CommonJS and ES Module support
+- 📤 **Triple Exports** - CommonJS, ES Module, and UMD (browser globals) support
 - 🔒 **SSR Safe** - Server-side rendering compatible
 
 ## Installation
 
 ```bash
-npm install @andsafe/iframe-resizing
+npm install @andsafe/iframe-messaging
 ```
 
 ```bash
-yarn add @andsafe/iframe-resizing
+yarn add @andsafe/iframe-messaging
 ```
 
 ```bash
-pnpm add @andsafe/iframe-resizing
+pnpm add @andsafe/iframe-messaging
 ```
 
 ## Quick Start
@@ -37,7 +37,7 @@ pnpm add @andsafe/iframe-resizing
 ### ES Modules
 
 ```typescript
-import { autoInitIFrameResizing } from '@andsafe/iframe-resizing';
+import { autoInitIFrameResizing } from '@andsafe/iframe-messaging';
 
 // Initialize with automatic DOM ready detection
 const cleanup = autoInitIFrameResizing();
@@ -49,7 +49,7 @@ const cleanup = autoInitIFrameResizing();
 ### CommonJS
 
 ```javascript
-const { autoInitIFrameResizing } = require('@andsafe/iframe-resizing');
+const { autoInitIFrameResizing } = require('@andsafe/iframe-messaging');
 
 const cleanup = autoInitIFrameResizing();
 ```
@@ -60,23 +60,23 @@ You can use the library directly in the browser without a build tool:
 
 ```html
 <!-- From CDN (unpkg) -->
-<script src="https://unpkg.com/@andsafe/iframe-resizing@1.4.0/dist/iframe-resizing.umd.js"></script>
+<script src="https://unpkg.com/@andsafe/iframe-messaging@1.5.0/dist/iframe-messaging.umd.js"></script>
 
 <!-- Or from jsDelivr -->
-<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-resizing@1.4.0/dist/iframe-resizing.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@andsafe/iframe-messaging@1.5.0/dist/iframe-messaging.umd.js"></script>
 
 <script>
-  // The library is available globally as IFrameResizing
-  const cleanup = IFrameResizing.autoInit();
+  // The library is available globally as IFrameMessaging
+  const cleanup = IFrameMessaging.autoInitIFrameResizing();
 </script>
 ```
 
 Or download and host the file yourself:
 
 ```html
-<script src="path/to/iframe-resizing.umd.js"></script>
+<script src="path/to/iframe-messaging.umd.js"></script>
 <script>
-  const cleanup = IFrameResizing.autoInit({
+  const cleanup = IFrameMessaging.autoInitIFrameResizing({
     onError: (error) => console.error(error)
   });
 </script>
@@ -89,7 +89,7 @@ Or download and host the file yourself:
 The simplest way to use this library is with `autoInitIFrameResizing`, which handles DOM ready state automatically:
 
 ```typescript
-import { autoInitIFrameResizing } from '@andsafe/iframe-resizing';
+import { autoInitIFrameResizing } from '@andsafe/iframe-messaging';
 
 const cleanup = autoInitIFrameResizing();
 ```
@@ -99,7 +99,7 @@ const cleanup = autoInitIFrameResizing();
 If you need more control over when initialization happens:
 
 ```typescript
-import { initIFrameResizing } from '@andsafe/iframe-resizing';
+import { initIFrameResizing } from '@andsafe/iframe-messaging';
 
 document.addEventListener('DOMContentLoaded', () => {
   const cleanup = initIFrameResizing();
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ### With Error Handling
 
 ```typescript
-import { autoInitIFrameResizing } from '@andsafe/iframe-resizing';
+import { autoInitIFrameResizing } from '@andsafe/iframe-messaging';
 
 const cleanup = autoInitIFrameResizing({
   onError: (error) => {
@@ -137,6 +137,38 @@ window.addEventListener('beforeunload', cleanup);
 ```
 
 ## API Reference
+
+### `pushToDataLayer(event, options?)`
+
+Pushes an event object from within an iframe to the parent window's data layer (e.g., Google Tag Manager).
+
+**Parameters:**
+- `event: Record<string, unknown>` - The event object to push
+- `options?: IFrameCommandOptions` - Optional error handling callbacks
+
+**Returns:** `void`
+
+**Behavior:**
+- No-ops on server side or when not running inside an iframe
+- Sends a `pushToDataLayer` command to the parent window and awaits acknowledgment
+- Calls `onError` / `captureError` on timeout or failure
+
+**Example:**
+```typescript
+import { pushToDataLayer } from '@andsafe/iframe-messaging';
+
+pushToDataLayer({ event: 'pageView' });
+
+pushToDataLayer(
+  { event: 'purchase', value: 100 },
+  {
+    onError: (error) => console.error('Push failed:', error),
+    captureError: (error) => Sentry.captureException(error)
+  }
+);
+```
+
+---
 
 ### `autoInitIFrameResizing(options?)` ⭐ Recommended
 
@@ -207,29 +239,33 @@ document.addEventListener('DOMContentLoaded', () => {
 | **Use Case** | General purpose | Manual control |
 | **Recommended** | ✅ Yes | Only if needed |
 
-### `IFrameResizingOptions`
+### `IFrameCommandOptions`
 
-Configuration options for iframe resizing.
+Base configuration options shared by all commands.
 
 ```typescript
-interface IFrameResizingOptions {
-  /**
-   * Error callback function called when resize command fails
-   */
+type IFrameCommandOptions = {
+  /** Error callback function called when a command fails */
   onError?: (error: Error) => void;
 
-  /**
-   * Error capture function for monitoring/logging services
-   */
+  /** Error capture function for monitoring/logging services */
   captureError?: (error: Error) => void;
+};
+```
 
+### `IFrameResizingOptions`
+
+Configuration options for iframe resizing. Extends `IFrameCommandOptions`.
+
+```typescript
+type IFrameResizingOptions = IFrameCommandOptions & {
   /**
    * Method used to calculate the iframe height
    * - 'contentRect': Uses the height from ResizeObserver's contentRect (default)
    * - 'scrollHeight': Uses document.documentElement.scrollHeight
    */
   heightCalculationMethod?: 'contentRect' | 'scrollHeight';
-}
+};
 ```
 
 ## How It Works
@@ -302,7 +338,7 @@ Perfect for embedding forms in legacy applications:
 <head>
   <title>Registration Form</title>
   <script type="module">
-    import { autoInitIFrameResizing } from '@andsafe/iframe-resizing';
+    import { autoInitIFrameResizing } from '@andsafe/iframe-messaging';
     autoInitIFrameResizing();
   </script>
 </head>
@@ -319,7 +355,7 @@ Perfect for embedding forms in legacy applications:
 Automatically resize as content changes:
 
 ```typescript
-import { autoInitIFrameResizing } from '@andsafe/iframe-resizing';
+import { autoInitIFrameResizing } from '@andsafe/iframe-messaging';
 
 // Initialize resizing
 autoInitIFrameResizing();
@@ -336,7 +372,7 @@ function addContent() {
 ### 3. Single Page Applications
 
 ```typescript
-import { initIFrameResizing } from '@andsafe/iframe-resizing';
+import { initIFrameResizing } from '@andsafe/iframe-messaging';
 
 class MyApp {
   private resizeCleanup?: () => void;
@@ -360,10 +396,11 @@ Full TypeScript support with type definitions:
 ```typescript
 import type {
   IFrameResizingOptions,
+  IFrameCommandOptions,
   Participant,
   Command,
   CommandResponse
-} from '@andsafe/iframe-resizing';
+} from '@andsafe/iframe-messaging';
 
 const options: IFrameResizingOptions = {
   onError: (error: Error) => console.error(error),
@@ -393,26 +430,28 @@ If experiencing frequent resize events:
 Ensure you're importing types correctly:
 
 ```typescript
-import type { IFrameResizingOptions } from '@andsafe/iframe-resizing';
+import type { IFrameResizingOptions } from '@andsafe/iframe-messaging';
 ```
 
 ## Package Exports
 
-This package provides both CommonJS and ES Module builds:
+This package provides CommonJS, ES Module, and UMD builds:
 
 ```json
 {
-  "main": "./dist/iframe-resizing.cjs",
-  "module": "./dist/iframe-resizing.js",
+  "main": "./dist/iframe-messaging.cjs",
+  "module": "./dist/iframe-messaging.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/iframe-resizing.js",
-      "require": "./dist/iframe-resizing.cjs"
+      "import": "./dist/iframe-messaging.js",
+      "require": "./dist/iframe-messaging.cjs"
     }
   }
 }
 ```
+
+The UMD build (`iframe-messaging.umd.js`) exposes the `IFrameMessaging` global for direct browser usage without a bundler.
 
 ## Testing
 
@@ -430,8 +469,6 @@ npm run test:ui
 ```
 
 **Coverage**: 97.67% statements, 96.42% branches, 100% functions
-
-For detailed testing documentation, see [TESTING.md](./TESTING.md).
 
 ## Code Quality
 
@@ -477,4 +514,4 @@ MIT © andsafe AG
 
 ## Support
 
-For issues and questions, please [open an issue](https://github.com/andsafe-AG/iframe-resizing/issues) on GitHub.
+For issues and questions, please [open an issue](https://github.com/andsafe-AG/iframe-messaging/issues) on GitHub.

@@ -9,7 +9,7 @@ import {
   autoInitIFrameResizing,
   type IFrameResizingOptions,
   initIFrameResizing,
-} from '@andsafe/iframe-resizing';
+} from '@andsafe/iframe-messaging';
 
 // Example 1: Basic usage
 function basicExample() {

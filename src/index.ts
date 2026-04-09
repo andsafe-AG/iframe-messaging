@@ -6,6 +6,13 @@
  * the documentElement and communicating size changes to the parent window.
  */
 
+export { pushToDataLayer } from './datalayer-push';
 export { autoInitIFrameResizing, initIFrameResizing } from './iframe-resizing';
-export type { Command, CommandResponse, IFrameResizingOptions, Participant } from './types';
+export type {
+  Command,
+  CommandResponse,
+  IFrameCommandOptions,
+  IFrameResizingOptions,
+  Participant,
+} from './types';
 export { participants } from './types';
